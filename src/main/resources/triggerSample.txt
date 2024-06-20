@@ -1,0 +1,8 @@
+gitlab-ci.yml
+rules:
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
+      when: always
+      allow_failure: true
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+      when: manual
+      allow_failure: true

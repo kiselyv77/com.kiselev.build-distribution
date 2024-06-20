@@ -1,0 +1,20 @@
+gitlab-ci.yml
+upload qa build:
+  stage: upload
+  only:
+    - develop
+    - /^release.*$/
+  needs:
+    - job: produce qa build
+      artifacts: true
+  variables:
+    FLAVOR: debug
+  tags:
+    - android
+  before_script:
+    - apk add --update curl && rm -rf /var/cache/apk/*
+  script:
+    - fastlane release_notes
+    - changelog_path=$(find . -name "changelog.txt")
+    - apk_path=$(find app/build/outputs/apk/$FLAVOR -name "*.apk")
+    - curl -F file=@$apk_path -F file=@$changelog_path -F "appName=$APP_NAME" http://11.111.11.1/uploadBuild
